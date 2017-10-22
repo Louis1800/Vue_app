@@ -1,47 +1,50 @@
 <template>
-  <div class="shopcart">
-      <div class="content" @click="toggleList">
-          <div class="content-left">
-              <div class="logo-wrapper">
-                  <div class="logo" :class="{'highlight': totalCount > 0}">
-                      <div class="cart-icon"></div>
-                  </div>
-                  <div class="num" v-show="totalCount > 0">{{totalCount}}</div>
-              </div>
-              <div class="price" :class="{'highlight': totalPrice > 0}">{{totalPrice}}元</div>
-              <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
-          </div>
-          <div class="content-right">
-              <div class="pay" :class="payClass">
-                  {{payDesc}}
-              </div>
-          </div>
-      </div>
-      <!-- <div class="ball-container">
-          <div transition="drop" v-for="ball in balls" v-show="ball.show" class="ball">
-              <div class="inner inner-hook"></div>
-          </div>
-      </div> -->
-      <div class="shopcart-list" v-show="listShow">
-          <div class="list-header">
-              <h1 class="title">购物车</h1>
-              <span class="empty">清空</span>
-          </div>
-          <div class="list-content" ref="listContent">
-              <ul>
-                  <li class="food" v-for="food in selectFoods">
-                      <span class="name">{{food.name}}</span>
-                      <div class="price">
-                          <span>￥{{food.price * food.count}}</span>
-                      </div>
-                      <div class="cartcontrol-wrapper">
-                          <cartcontrol :food="food"></cartcontrol>
-                      </div>
-                  </li>
-              </ul>
-          </div>
-      </div>
-  </div>
+<div>
+    <div class="shopcart">
+        <div class="content" @click="toggleList">
+            <div class="content-left">
+                <div class="logo-wrapper">
+                    <div class="logo" :class="{'highlight': totalCount > 0}">
+                        <div class="cart-icon"></div>
+                    </div>
+                    <div class="num" v-show="totalCount > 0">{{totalCount}}</div>
+                </div>
+                <div class="price" :class="{'highlight': totalPrice > 0}">{{totalPrice}}元</div>
+                <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
+            </div>
+            <div class="content-right">
+                <div class="pay" :class="payClass" @click.stop="pay">
+                    {{payDesc}}
+                </div>
+            </div>
+        </div>
+        <!-- <div class="ball-container">
+            <div transition="drop" v-for="ball in balls" v-show="ball.show" class="ball">
+                <div class="inner inner-hook"></div>
+            </div>
+        </div> -->
+        <div class="shopcart-list" v-show="listShow">
+            <div class="list-header">
+                <h1 class="title">购物车</h1>
+                <span class="empty" @click="empty">清空</span>
+            </div>
+            <div class="list-content" ref="listContent">
+                <ul>
+                    <li class="food" v-for="food in selectFoods">
+                        <span class="name">{{food.name}}</span>
+                        <div class="price">
+                            <span>￥{{food.price * food.count}}</span>
+                        </div>
+                        <div class="cartcontrol-wrapper">
+                            <cartcontrol :food="food"></cartcontrol>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="list-mask" @click="hideList" v-show="listShow"></div>
+</div>
 </template>
 
 <script>
@@ -156,6 +159,20 @@ export default {
                 return;
             }
             this.fold = !this.fold;
+        },
+        empty () {
+            this.selectFoods.forEach((food) => {
+                food.count = 0;
+            });
+        },
+        hideList () {
+            this.fold = true;
+        },
+        pay () {
+            if (this.totalPrice < this.minPrice) {
+                return;
+            }
+            window.alert(`请支付${this.totalPrice}元`);
         }
     },
     // created () {
@@ -371,7 +388,16 @@ export default {
             right: 0;
             bottom: 6px;
         }
-
+.list-mask{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 40;
+    background: rgba(7, 17, 27, .6);
+    -webkit-backdrop-filter: blur(10px);
+}
     /* .ball-container{
     } */
     /* .ball{

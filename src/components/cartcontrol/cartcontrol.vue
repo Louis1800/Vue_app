@@ -1,11 +1,11 @@
 <template>
   <div class="cartcontrol">
-      <div v-show="food.count > 0" class="cart-decrease" @click="decreaseCart">
+      <div v-show="food.count > 0" class="cart-decrease" @click.stop="decreaseCart">
       </div>
       <div v-show="food.count" class="cart-count">
           {{food.count}}
       </div>
-      <div class="cart-add" @click="addCart">
+      <div class="cart-add" @click.stop="addCart">
       </div>
   </div>
 </template>
